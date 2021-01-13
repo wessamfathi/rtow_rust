@@ -129,6 +129,14 @@ struct hit_record {
 	p: vec3,
 	normal: vec3,
 	t: f64,
+	front_face: bool,
+}
+
+impl hit_record {
+	fn set_face_normal(&mut self, r: ray, outward_normal: vec3) {
+		self.front_face = dot(r.direction, outward_normal) > 0.0;
+		self.normal = if self.front_face { outward_normal } else { -outward_normal };
+	}
 }
 
 
@@ -151,7 +159,7 @@ struct sphere {
 }
 
 impl sphere {
-	pub fn hit(&self, r: ray, t_min: f64, t_max: f64, mut rec: hit_record) -> bool {
+	pub fn hit(&self, r: ray, t_min: f64, t_max: f64, rec: &mut hit_record) -> bool {
 	    let oc = r.origin - self.center;
 	    let a = r.direction.length_squared();
 	    let half_b = dot(oc, r.direction);
@@ -180,7 +188,8 @@ impl sphere {
 	        if result {
 		        rec.t = root;
 		        rec.p = r.at(rec.t);
-		        rec.normal = (rec.p - self.center) / self.radius;
+		        let outward_normal = (rec.p - self.center) / self.radius;
+		        rec.set_face_normal(r, outward_normal);
 
 		        true
 	        }
