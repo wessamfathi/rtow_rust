@@ -125,6 +125,72 @@ impl vec3 {
 	}
 }
 
+struct hit_record {
+	p: vec3,
+	normal: vec3,
+	t: f64,
+}
+
+
+// Base class for all hittables
+struct hittable {
+
+}
+
+
+impl hittable {
+	pub fn hit(r: ray, t_min: f64, t_max: f64, rec: hit_record) -> bool {
+		false
+	}
+}
+
+struct sphere {
+	parent: hittable,
+	pub center: vec3,
+	pub radius: f64,
+}
+
+impl sphere {
+	pub fn hit(&self, r: ray, t_min: f64, t_max: f64, mut rec: hit_record) -> bool {
+	    let oc = r.origin - self.center;
+	    let a = r.direction.length_squared();
+	    let half_b = dot(oc, r.direction);
+	    let c = oc.length_squared() - self.radius * self.radius;
+	    let discriminant = half_b * half_b - a * c;
+
+	    let mut result = true;
+
+	    if discriminant < 0.0 {
+	        false
+	    }
+	    else {
+	        let sqrtd = discriminant.sqrt();
+
+	        // Find the nearest root that lie in the acceptable range
+	        let mut root = (-half_b - sqrtd) / a;
+
+	        if root < t_min || root > t_max {
+	            root = (-half_b + sqrtd) / a;
+
+	            if root < t_min || root > t_max {
+	                result = false;
+	            }
+	        }
+
+	        if result {
+		        rec.t = root;
+		        rec.p = r.at(rec.t);
+		        rec.normal = (rec.p - self.center) / self.radius;
+
+		        true
+	        }
+	        else {
+	        	false
+	        }
+		}
+	}
+}
+
 
 
 #[derive(Clone, Copy)]
