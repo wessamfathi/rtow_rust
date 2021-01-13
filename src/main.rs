@@ -5,30 +5,34 @@ use src::ray;
 use src::vec3;
 use src::dot;
 
-fn hit_sphere(center: vec3, radius: f64, r: ray) -> bool {
+fn hit_sphere(center: vec3, radius: f64, r: ray) -> f64 {
     let oc = r.origin - center;
     let a = dot(r.direction, r.direction);
     let b = 2.0 * dot(oc, r.direction);
     let c = dot(oc, oc) - radius * radius;
     let discriminant = b * b - 4.0 * a * c;
 
-    discriminant > 0.0
+    if discriminant < 0.0 {
+        -1.0
+    }
+    else {
+        (-b - discriminant.sqrt()) / (2.0 * a)
+    }
 }
 
 fn ray_color(r: ray) -> vec3 {
-    let result: vec3;
+    let t = hit_sphere(vec3::init(0.0, 0.0, -1.0), 0.5, r);
 
-    if hit_sphere(vec3::init(0.0, 0.0, -1.0), 0.5, r) {
-        result = vec3::init(1.0, 0.0, 0.0);
+    if t > 0.0 {
+        let n = (r.at(t) - vec3::init(0.0, 0.0, -1.0)).unit_vector();
+        0.5 * vec3::init(n.x() + 1.0, n.y() + 1.0, n.z() + 1.0)
     }
     else {
         let unit_direction = r.direction.unit_vector();
         let t = 0.5 * (unit_direction.y() + 1.0);
         
-        result = (1.0 - t) * vec3::init(1.0, 1.0, 1.0) + t * vec3::init(0.5, 0.7, 1.0);
+        (1.0 - t) * vec3::init(1.0, 1.0, 1.0) + t * vec3::init(0.5, 0.7, 1.0)
     }
-
-    result
 }
 
 fn main() {
