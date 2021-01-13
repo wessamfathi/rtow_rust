@@ -5,23 +5,8 @@ use src::ray;
 use src::vec3;
 use src::dot;
 
-fn hit_sphere(center: vec3, radius: f64, r: ray) -> f64 {
-    let oc = r.origin - center;
-    let a = r.direction.length_squared();
-    let half_b = dot(oc, r.direction);
-    let c = oc.length_squared() - radius * radius;
-    let discriminant = half_b * half_b - a * c;
-
-    if discriminant < 0.0 {
-        -1.0
-    }
-    else {
-        (-half_b - discriminant.sqrt()) / a
-    }
-}
-
 fn ray_color(r: ray) -> vec3 {
-    let t = hit_sphere(vec3::init(0.0, 0.0, -1.0), 0.5, r);
+    let t = 1.0;//hit_sphere(vec3::init(0.0, 0.0, -1.0), 0.5, r);
 
     if t > 0.0 {
         let n = (r.at(t) - vec3::init(0.0, 0.0, -1.0)).unit_vector();
