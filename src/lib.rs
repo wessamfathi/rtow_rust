@@ -2,8 +2,13 @@
 #![allow(unused_variables)]
 #![allow(non_camel_case_types)]
 
+extern crate rand;
+use rand::thread_rng;
+use rand::Rng;
+
 extern crate overload;
 use overload::overload;
+
 use std::ops;
 
 pub const PI:f64 = 3.1415926535897932385;
@@ -131,6 +136,18 @@ impl vec3 {
 
 fn degrees_to_radians(degrees: f64) -> f64 {
     degrees * PI / 180.0
+}
+
+fn random() -> f64 {
+	// Returns a random real in [0,1)
+	let mut rng = thread_rng();
+	rng.gen_range(0.0..1.0)
+}
+
+fn random_range(min: f64, max: f64) -> f64 {
+	// Returns a random real in [min,max])
+	let mut rng = thread_rng();
+	rng.gen_range(min..max)
 }
 
 #[derive(Copy, Clone)]
