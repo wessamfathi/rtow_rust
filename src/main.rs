@@ -3,29 +3,44 @@
 
 use src::ray;
 use src::vec3;
-use src::dot;
+use src::sphere;
+use src::INFINITY;
+use src::hit_record;
+use src::hittable_list;
 
-fn ray_color(r: ray) -> vec3 {
-    let t = 1.0;//hit_sphere(vec3::init(0.0, 0.0, -1.0), 0.5, r);
+fn ray_color(r: ray, world: &hittable_list) -> vec3 {
+    let mut rec = hit_record::new();
 
-    if t > 0.0 {
-        let n = (r.at(t) - vec3::init(0.0, 0.0, -1.0)).unit_vector();
-        0.5 * vec3::init(n.x() + 1.0, n.y() + 1.0, n.z() + 1.0)
-    }
-    else {
-        let unit_direction = r.direction.unit_vector();
-        let t = 0.5 * (unit_direction.y() + 1.0);
-        
-        (1.0 - t) * vec3::init(1.0, 1.0, 1.0) + t * vec3::init(0.5, 0.7, 1.0)
-    }
+    if world.hit(r, 0.0, INFINITY, &mut rec) {
+        return 0.5 * (rec.normal + vec3::init(1.0, 1.0, 1.0))
+    };
+
+    let unit_direction = r.direction.unit_vector();
+    let t = 0.5 * (unit_direction.y() + 1.0);
+
+    (1.0 - t) * vec3::init(1.0, 1.0, 1.0) + t * vec3::init(0.5, 0.7, 1.0)
 }
 
 fn main() {
-
     // Image
     let aspect_ratio = 16.0 / 9.0;
 	let image_width = 400;
 	let image_height = (image_width as f64 / aspect_ratio) as i32;
+
+    // World
+    let sphere1 = sphere {
+        center: vec3::init(0.0, 0.0, -1.0),
+        radius: 0.5
+    };
+
+    let sphere2 = sphere {
+        center: vec3::init(0.0, -100.5, -1.0),
+        radius: 100.0
+    };
+
+    let mut world = hittable_list::new();
+    world.add(&sphere1);
+    world.add(&sphere2);
 
     // Camera
     let viewport_height = 2.0;
@@ -51,7 +66,7 @@ fn main() {
                 direction: lower_left_corner + u * horizontal + v * vertical - origin,
             };
 
-            let pixel_color = ray_color(r);
+            let pixel_color = ray_color(r, &world);
 
             pixel_color.print();
     	}

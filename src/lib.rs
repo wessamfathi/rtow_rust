@@ -1,9 +1,13 @@
 #![allow(dead_code)]
+#![allow(unused_variables)]
 #![allow(non_camel_case_types)]
 
 extern crate overload;
 use overload::overload;
 use std::ops;
+
+pub const PI:f64 = 3.1415926535897932385;
+pub const INFINITY:f64 = f64::INFINITY;
 
 pub fn dot(u: vec3, v: vec3) -> f64 {
 	u.e[0] * v.e[0] + u.e[1] * v.e[1] + u.e[2] * v.e[2]
@@ -16,49 +20,49 @@ pub struct vec3 {
 
 overload!(- (u: ?vec3) -> vec3 { vec3::init(-u.e[0], -u.e[1], -u.e[2]) } );
 
-overload!((u: ?vec3) + (v: ?vec3) -> vec3 { 
-	vec3::init(u.e[0] + v.e[0], u.e[1] + v.e[1], u.e[2] + v.e[2]) 
+overload!((u: ?vec3) + (v: ?vec3) -> vec3 {
+	vec3::init(u.e[0] + v.e[0], u.e[1] + v.e[1], u.e[2] + v.e[2])
 } );
 
-overload!((u: ?vec3) - (v: ?vec3) -> vec3 { 
-	vec3::init(u.e[0] - v.e[0], u.e[1] - v.e[1], u.e[2] - v.e[2]) 
+overload!((u: ?vec3) - (v: ?vec3) -> vec3 {
+	vec3::init(u.e[0] - v.e[0], u.e[1] - v.e[1], u.e[2] - v.e[2])
 } );
 
-overload!((u: ?vec3) * (v: ?vec3) -> vec3 { 
-	vec3::init(u.e[0] * v.e[0], u.e[1] * v.e[1], u.e[2] * v.e[2]) 
+overload!((u: ?vec3) * (v: ?vec3) -> vec3 {
+	vec3::init(u.e[0] * v.e[0], u.e[1] * v.e[1], u.e[2] * v.e[2])
 } );
 
-overload!((v: ?vec3) * (t: f64) -> vec3 { 
-	vec3::init(v.e[0] * t, v.e[1] * t, v.e[2] * t) 
+overload!((v: ?vec3) * (t: f64) -> vec3 {
+	vec3::init(v.e[0] * t, v.e[1] * t, v.e[2] * t)
 } );
 
-overload!((t: f64) * (v: ?vec3) -> vec3 { 
+overload!((t: f64) * (v: ?vec3) -> vec3 {
 	v * t
 } );
 
-overload!((v: ?vec3) / (t: f64) -> vec3 { 
+overload!((v: ?vec3) / (t: f64) -> vec3 {
 	(1.0/t) * v
 } );
 
-overload!((u: &mut vec3) += (v: vec3) { 
+overload!((u: &mut vec3) += (v: vec3) {
 	u.e[0] += v.e[0];
 	u.e[1] += v.e[1];
-	u.e[2] += v.e[2]; 
+	u.e[2] += v.e[2];
 });
 
-overload!((u: &mut vec3) -= (v: vec3) { 
+overload!((u: &mut vec3) -= (v: vec3) {
 	u.e[0] -= v.e[0];
 	u.e[1] -= v.e[1];
 	u.e[2] -= v.e[2];
 });
 
-overload!((u: &mut vec3) *= (v: vec3) { 
+overload!((u: &mut vec3) *= (v: vec3) {
 	u.e[0] *= v.e[0];
 	u.e[1] *= v.e[1];
 	u.e[2] *= v.e[2];
 });
 
-overload!((u: &mut vec3) /= (v: vec3) { 
+overload!((u: &mut vec3) /= (v: vec3) {
 	u.e[0] /= v.e[0];
 	u.e[1] /= v.e[1];
 	u.e[2] /= v.e[2];
@@ -121,18 +125,32 @@ impl vec3 {
 			"{} {} {}",
 			(255.99999 * self.e[0]) as i32,
 			(255.99999 * self.e[1]) as i32,
-			(255.99999 * self.e[2]) as i32) 
+			(255.99999 * self.e[2]) as i32)
 	}
 }
 
-struct hit_record {
-	p: vec3,
-	normal: vec3,
-	t: f64,
-	front_face: bool,
+fn degrees_to_radians(degrees: f64) -> f64 {
+    degrees * PI / 180.0
+}
+
+#[derive(Copy, Clone)]
+pub struct hit_record {
+	pub p: vec3,
+	pub normal: vec3,
+	pub t: f64,
+	pub front_face: bool,
 }
 
 impl hit_record {
+	pub fn new() -> hit_record {
+		hit_record {
+			p: vec3::init(0.0, 0.0, 0.0),
+			normal: vec3::init(0.0, 0.0, 0.0),
+			t: 0.0,
+			front_face: false
+		}
+	}
+
 	fn set_face_normal(&mut self, r: ray, outward_normal: vec3) {
 		self.front_face = dot(r.direction, outward_normal) > 0.0;
 		self.normal = if self.front_face { outward_normal } else { -outward_normal };
@@ -141,19 +159,54 @@ impl hit_record {
 
 
 // Base class for all hittables
-struct hittable {
+pub struct hittable {
 
 }
 
 
 impl hittable {
-	pub fn hit(r: ray, t_min: f64, t_max: f64, rec: hit_record) -> bool {
+	pub fn hit(&self, r: ray, t_min: f64, t_max: f64, rec: &mut hit_record) -> bool {
 		false
 	}
 }
 
-struct sphere {
-	parent: hittable,
+pub struct hittable_list<'a> {
+	hittables: Vec<&'a sphere>
+}
+
+impl<'a> hittable_list<'a> {
+	pub fn new() -> hittable_list<'a> {
+		hittable_list {
+			hittables: Vec::new()
+		}
+	}
+
+	fn clear(&mut self) {
+		self.hittables.clear();
+	}
+
+	pub fn add(&mut self, object: &'a sphere) {
+		self.hittables.push(object);
+	}
+
+	pub fn hit(&self, r: ray, t_min: f64, t_max: f64, rec: &mut hit_record) -> bool {
+		let mut temp_rec = hit_record::new();
+		let mut hit_anything = false;
+		let mut closest_so_far = t_max;
+
+		for hittable in &self.hittables {
+			if hittable.hit(r, t_min, closest_so_far, &mut temp_rec) {
+				hit_anything = true;
+				closest_so_far = temp_rec.t;
+				*rec = temp_rec;
+			}
+		}
+
+		hit_anything
+	}
+}
+
+pub struct sphere {
 	pub center: vec3,
 	pub radius: f64,
 }
@@ -214,5 +267,3 @@ impl ray {
 		self.origin + t * self.direction
 	}
 }
-
-
