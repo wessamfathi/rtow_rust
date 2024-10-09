@@ -53,7 +53,7 @@ fn main() {
     let lower_left_corner = origin - horizontal / 2.0 - vertical / 2.0 - vec3::init(0.0, 0.0, focal_length);
 
     // Render
-	println!("P3\n{} {}\n255", image_width, image_height);
+    println!("P3\n{} {}\n255", image_width, image_height);
 
     for j in (0..image_height).rev() {
         eprintln!("\rScanlines remaining: {}", j);
