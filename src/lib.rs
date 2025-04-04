@@ -1,6 +1,5 @@
 #![allow(dead_code)]
 #![allow(unused_variables)]
-#![allow(non_camel_case_types)]
 
 extern crate rand;
 use rand::thread_rng;
@@ -14,75 +13,75 @@ use std::ops;
 pub const PI:f64 = 3.1415926535897932385;
 pub const INFINITY:f64 = f64::INFINITY;
 
-pub fn dot(u: vec3, v: vec3) -> f64 {
+pub fn dot(u: Vec3, v: Vec3) -> f64 {
 	u.e[0] * v.e[0] + u.e[1] * v.e[1] + u.e[2] * v.e[2]
 }
 
 #[derive(Clone, Copy)]
-pub struct vec3 {
+pub struct Vec3 {
 	pub e: [f64; 3],
 }
 
-overload!(- (u: ?vec3) -> vec3 { vec3::init(-u.e[0], -u.e[1], -u.e[2]) } );
+overload!(- (u: ?Vec3) -> Vec3 { Vec3::init(-u.e[0], -u.e[1], -u.e[2]) } );
 
-overload!((u: ?vec3) + (v: ?vec3) -> vec3 {
-	vec3::init(u.e[0] + v.e[0], u.e[1] + v.e[1], u.e[2] + v.e[2])
+overload!((u: ?Vec3) + (v: ?Vec3) -> Vec3 {
+	Vec3::init(u.e[0] + v.e[0], u.e[1] + v.e[1], u.e[2] + v.e[2])
 } );
 
-overload!((u: ?vec3) - (v: ?vec3) -> vec3 {
-	vec3::init(u.e[0] - v.e[0], u.e[1] - v.e[1], u.e[2] - v.e[2])
+overload!((u: ?Vec3) - (v: ?Vec3) -> Vec3 {
+	Vec3::init(u.e[0] - v.e[0], u.e[1] - v.e[1], u.e[2] - v.e[2])
 } );
 
-overload!((u: ?vec3) * (v: ?vec3) -> vec3 {
-	vec3::init(u.e[0] * v.e[0], u.e[1] * v.e[1], u.e[2] * v.e[2])
+overload!((u: ?Vec3) * (v: ?Vec3) -> Vec3 {
+	Vec3::init(u.e[0] * v.e[0], u.e[1] * v.e[1], u.e[2] * v.e[2])
 } );
 
-overload!((v: ?vec3) * (t: f64) -> vec3 {
-	vec3::init(v.e[0] * t, v.e[1] * t, v.e[2] * t)
+overload!((v: ?Vec3) * (t: f64) -> Vec3 {
+	Vec3::init(v.e[0] * t, v.e[1] * t, v.e[2] * t)
 } );
 
-overload!((t: f64) * (v: ?vec3) -> vec3 {
+overload!((t: f64) * (v: ?Vec3) -> Vec3 {
 	v * t
 } );
 
-overload!((v: ?vec3) / (t: f64) -> vec3 {
+overload!((v: ?Vec3) / (t: f64) -> Vec3 {
 	(1.0/t) * v
 } );
 
-overload!((u: &mut vec3) += (v: vec3) {
+overload!((u: &mut Vec3) += (v: Vec3) {
 	u.e[0] += v.e[0];
 	u.e[1] += v.e[1];
 	u.e[2] += v.e[2];
 });
 
-overload!((u: &mut vec3) -= (v: vec3) {
+overload!((u: &mut Vec3) -= (v: Vec3) {
 	u.e[0] -= v.e[0];
 	u.e[1] -= v.e[1];
 	u.e[2] -= v.e[2];
 });
 
-overload!((u: &mut vec3) *= (v: vec3) {
+overload!((u: &mut Vec3) *= (v: Vec3) {
 	u.e[0] *= v.e[0];
 	u.e[1] *= v.e[1];
 	u.e[2] *= v.e[2];
 });
 
-overload!((u: &mut vec3) /= (v: vec3) {
+overload!((u: &mut Vec3) /= (v: Vec3) {
 	u.e[0] /= v.e[0];
 	u.e[1] /= v.e[1];
 	u.e[2] /= v.e[2];
 });
 
 
-impl vec3 {
-	fn vec3() -> vec3 {
-		vec3 {
+impl Vec3 {
+	fn vec3() -> Vec3 {
+		Vec3 {
 			e: [0.0, 0.0, 0.0]
 		}
 	}
 
-	pub fn init(e0: f64, e1: f64, e2: f64) -> vec3 {
-		vec3 {
+	pub fn init(e0: f64, e1: f64, e2: f64) -> Vec3 {
+		Vec3 {
 			e: [e0, e1, e2]
 		}
 	}
@@ -111,8 +110,8 @@ impl vec3 {
 		self.e[0] * self.e[0] + self.e[1] * self.e[1] + self.e[2] * self.e[2]
 	}
 
-	fn cross(u: vec3, v: vec3) -> vec3 {
-		vec3 {
+	fn cross(u: Vec3, v: Vec3) -> Vec3 {
+		Vec3 {
 			e: [
 			u.e[1] * v.e[2] - u.e[2] * v.e[1],
 			u.e[2] * v.e[0] - u.e[0] * v.e[2],
@@ -121,7 +120,7 @@ impl vec3 {
 		}
 	}
 
-	pub fn unit_vector(&self) -> vec3 {
+	pub fn unit_vector(&self) -> Vec3 {
 		self / self.length()
 	}
 
@@ -151,49 +150,49 @@ fn random_range(min: f64, max: f64) -> f64 {
 }
 
 #[derive(Copy, Clone)]
-pub struct hit_record {
-	pub p: vec3,
-	pub normal: vec3,
+pub struct HitRecord {
+	pub p: Vec3,
+	pub normal: Vec3,
 	pub t: f64,
 	pub front_face: bool,
 }
 
-impl hit_record {
-	pub fn new() -> hit_record {
-		hit_record {
-			p: vec3::init(0.0, 0.0, 0.0),
-			normal: vec3::init(0.0, 0.0, 0.0),
+impl HitRecord {
+	pub fn new() -> HitRecord {
+		HitRecord {
+			p: Vec3::init(0.0, 0.0, 0.0),
+			normal: Vec3::init(0.0, 0.0, 0.0),
 			t: 0.0,
 			front_face: false
 		}
 	}
 
-	fn set_face_normal(&mut self, r: ray, outward_normal: vec3) {
+	fn set_face_normal(&mut self, r: Ray, outward_normal: Vec3) {
 		self.front_face = dot(r.direction, outward_normal) > 0.0;
 		self.normal = if self.front_face { outward_normal } else { -outward_normal };
 	}
 }
 
 
-// Base class for all hittables
-pub struct hittable {
+// Base class for all Hittables
+pub struct Hittable {
 
 }
 
 
-impl hittable {
-	pub fn hit(&self, r: ray, t_min: f64, t_max: f64, rec: &mut hit_record) -> bool {
+impl Hittable {
+	pub fn hit(&self, r: Ray, t_min: f64, t_max: f64, rec: &mut HitRecord) -> bool {
 		false
 	}
 }
 
-pub struct hittable_list<'a> {
-	hittables: Vec<&'a sphere>
+pub struct HittableHittableList<'a> {
+	hittables: Vec<&'a Sphere>
 }
 
-impl<'a> hittable_list<'a> {
-	pub fn new() -> hittable_list<'a> {
-		hittable_list {
+impl<'a> HittableHittableList<'a> {
+	pub fn new() -> HittableHittableList<'a> {
+		HittableHittableList {
 			hittables: Vec::new()
 		}
 	}
@@ -202,12 +201,12 @@ impl<'a> hittable_list<'a> {
 		self.hittables.clear();
 	}
 
-	pub fn add(&mut self, object: &'a sphere) {
+	pub fn add(&mut self, object: &'a Sphere) {
 		self.hittables.push(object);
 	}
 
-	pub fn hit(&self, r: ray, t_min: f64, t_max: f64, rec: &mut hit_record) -> bool {
-		let mut temp_rec = hit_record::new();
+	pub fn hit(&self, r: Ray, t_min: f64, t_max: f64, rec: &mut HitRecord) -> bool {
+		let mut temp_rec = HitRecord::new();
 		let mut hit_anything = false;
 		let mut closest_so_far = t_max;
 
@@ -223,13 +222,13 @@ impl<'a> hittable_list<'a> {
 	}
 }
 
-pub struct sphere {
-	pub center: vec3,
+pub struct Sphere {
+	pub center: Vec3,
 	pub radius: f64,
 }
 
-impl sphere {
-	pub fn hit(&self, r: ray, t_min: f64, t_max: f64, rec: &mut hit_record) -> bool {
+impl Sphere {
+	pub fn hit(&self, r: Ray, t_min: f64, t_max: f64, rec: &mut HitRecord) -> bool {
 	    let oc = r.origin - self.center;
 	    let a = r.direction.length_squared();
 	    let half_b = dot(oc, r.direction);
@@ -273,14 +272,14 @@ impl sphere {
 
 
 #[derive(Clone, Copy)]
-pub struct ray {
-	pub origin: vec3,
-	pub direction: vec3,
+pub struct Ray {
+	pub origin: Vec3,
+	pub direction: Vec3,
 }
 
 
-impl ray {
-	pub fn at(&self, t: f64) -> vec3 {
+impl Ray {
+	pub fn at(&self, t: f64) -> Vec3 {
 		self.origin + t * self.direction
 	}
 }
