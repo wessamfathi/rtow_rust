@@ -5,9 +5,9 @@ use src::Vec3;
 use src::Sphere;
 use src::INFINITY;
 use src::HitRecord;
-use src::HittableHittableList;
+use src::HittableList;
 
-fn ray_color(r: Ray, world: &HittableHittableList) -> Vec3 {
+fn ray_color(r: Ray, world: &HittableList) -> Vec3 {
     let mut rec = HitRecord::new();
 
     if world.hit(r, 0.0, INFINITY, &mut rec) {
@@ -37,7 +37,7 @@ fn main() {
         radius: 100.0
     };
 
-    let mut world = HittableHittableList::new();
+    let mut world = HittableList::new();
     world.add(&sphere1);
     world.add(&sphere2);
 

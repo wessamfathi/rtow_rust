@@ -186,13 +186,13 @@ impl Hittable {
 	}
 }
 
-pub struct HittableHittableList<'a> {
+pub struct HittableList<'a> {
 	hittables: Vec<&'a Sphere>
 }
 
-impl<'a> HittableHittableList<'a> {
-	pub fn new() -> HittableHittableList<'a> {
-		HittableHittableList {
+impl<'a> HittableList<'a> {
+	pub fn new() -> HittableList<'a> {
+		HittableList {
 			hittables: Vec::new()
 		}
 	}
