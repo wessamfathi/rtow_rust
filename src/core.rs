@@ -1,6 +1,7 @@
 use rand::{Rng, thread_rng};
 use vec3::Vec3;
 
+pub mod camera;
 pub mod hit_record;
 pub mod ray;
 pub mod vec3;

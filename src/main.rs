@@ -1,18 +1,20 @@
 #![allow(dead_code)]
 
 use std::fs;
+use rand::{Rng,thread_rng};
+use rtow_rust::core;
 
 use core::INFINITY;
 use core::hit_record::HitRecord;
 use core::ray::Ray;
 use core::vec3::Vec3;
-use rtow_rust::core;
+use core::camera::*;
 
 use rtow_rust::shapes;
 use shapes::hittable_list::HittableList;
 use shapes::sphere::Sphere;
 
-const FILE_PATH: &str = "./output/07.ppm";
+const FILE_PATH: &str = "./output/06.ppm";
 
 fn ray_color(r: Ray, world: &HittableList) -> Vec3 {
     let mut rec = HitRecord::new();
@@ -29,10 +31,9 @@ fn ray_color(r: Ray, world: &HittableList) -> Vec3 {
 
 fn main() {
     // Image
-    let aspect_ratio = 16.0 / 9.0;
     let image_width = 400;
-    let image_height = (image_width as f64 / aspect_ratio) as i32;
-
+    let image_height = (image_width as f64 / ASPECT_RATIO) as i32;
+    
     // World
     let sphere1 = Sphere {
         center: Vec3::init(0.0, 0.0, -1.0),
@@ -49,30 +50,21 @@ fn main() {
     world.add(&sphere2);
 
     // Camera
-    let viewport_height = 2.0;
-    let viewport_width = aspect_ratio * viewport_height;
-    let focal_length = 1.0;
-
-    let origin = Vec3::init(0.0, 0.0, 0.0);
-    let horizontal = Vec3::init(viewport_width, 0.0, 0.0);
-    let vertical = Vec3::init(0.0, viewport_height, 0.0);
-    let lower_left_corner =
-        origin - horizontal / 2.0 - vertical / 2.0 - Vec3::init(0.0, 0.0, focal_length);
+    let camera = Camera::init();
 
     // Render
     let mut buffer = String::new();
     buffer.push_str(&format!("P3\n{} {}\n255\n", image_width, image_height));
 
+    let mut rng = thread_rng();
+
     for j in (0..image_height).rev() {
         eprintln!("\rScanlines remaining: {}", j);
         for i in 0..image_width {
-            let u = i as f64 / (image_width - 1) as f64;
-            let v = j as f64 / (image_height - 1) as f64;
+            let u = ((i as f64) + rng.gen_range(0.0..1.0)) / (image_width - 1) as f64;
+            let v = ((j as f64) + rng.gen_range(0.0..1.0)) / (image_height - 1) as f64;
 
-            let r = Ray {
-                origin: origin,
-                direction: lower_left_corner + u * horizontal + v * vertical - origin,
-            };
+            let r = camera.get_ray(u, v);
 
             let pixel_color = ray_color(r, &world);
 
