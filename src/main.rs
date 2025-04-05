@@ -1,13 +1,16 @@
 #![allow(dead_code)]
 
-use src::Ray;
-use src::Vec3;
-use src::Sphere;
-use src::INFINITY;
-use src::HitRecord;
-use src::HittableList;
-
 use std::fs;
+
+use rtow_rust::core;
+use core::vec3::Vec3;
+use core::ray::Ray;
+use core::hit_record::HitRecord;
+use core::INFINITY;
+
+use rtow_rust::shapes;
+use shapes::sphere::Sphere;
+use shapes::hittable_list::HittableList;
 
 const FILE_PATH: &str = "./output/image.ppm";
 
