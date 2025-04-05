@@ -124,12 +124,13 @@ impl Vec3 {
 		self / self.length()
 	}
 
-	pub fn print(&self) {
-		println!(
-			"{} {} {}",
+	pub fn print(&self) -> String {
+		format!(
+			"{} {} {}\n",
 			(255.99999 * self.e[0]) as i32,
 			(255.99999 * self.e[1]) as i32,
-			(255.99999 * self.e[2]) as i32)
+			(255.99999 * self.e[2]) as i32
+		)
 	}
 }
 

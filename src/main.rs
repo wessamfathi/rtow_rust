@@ -7,6 +7,10 @@ use src::INFINITY;
 use src::HitRecord;
 use src::HittableList;
 
+use std::fs;
+
+const FILE_PATH: &str = "./output/image.ppm";
+
 fn ray_color(r: Ray, world: &HittableList) -> Vec3 {
     let mut rec = HitRecord::new();
 
@@ -52,7 +56,12 @@ fn main() {
     let lower_left_corner = origin - horizontal / 2.0 - vertical / 2.0 - Vec3::init(0.0, 0.0, focal_length);
 
     // Render
-    println!("P3\n{} {}\n255", image_width, image_height);
+    let mut buffer = String::new();
+    buffer.push_str(&format!(
+        "P3\n{} {}\n255\n",
+        image_width,
+        image_height
+    ));
 
     for j in (0..image_height).rev() {
         eprintln!("\rScanlines remaining: {}", j);
@@ -67,9 +76,11 @@ fn main() {
 
             let pixel_color = ray_color(r, &world);
 
-            pixel_color.print();
+            buffer.push_str(&pixel_color.print());
     	}
     }
+
+    let _ = fs::write(FILE_PATH, buffer);
 
     eprintln!("\nDone.");
 }
