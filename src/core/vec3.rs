@@ -104,6 +104,12 @@ impl Vec3 {
         self / self.length()
     }
 
+    pub fn sqrt(&mut self) {
+        self.e[0] = self.e[0].sqrt();
+        self.e[1] = self.e[1].sqrt();
+        self.e[2] = self.e[2].sqrt();
+    }
+
     pub fn print(&self) -> String {
         format!(
             "{} {} {}\n",
