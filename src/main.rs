@@ -1,7 +1,6 @@
 #![allow(dead_code)]
 
 use std::fs;
-use rand::{Rng,thread_rng};
 use rtow_rust::core;
 
 use core::INFINITY;
@@ -14,14 +13,27 @@ use rtow_rust::shapes;
 use shapes::hittable_list::HittableList;
 use shapes::sphere::Sphere;
 
-const FILE_PATH: &str = "./output/06.ppm";
+const FILE_PATH: &str = "./output/07.ppm";
 
-fn ray_color(r: Ray, world: &HittableList) -> Vec3 {
+fn random_in_unit_sphere() -> Vec3 {
+    loop {
+        let p = 2.0 * Vec3::init(core::random(), core::random(), core::random()) - Vec3::init(1.0, 1.0, 1.0);
+        if p.length_squared() < 1.0 {
+            return p;
+        }
+    }
+}
+
+fn ray_color(r: Ray, world: &HittableList, depth: i32) -> Vec3 {
     let mut rec = HitRecord::new();
 
-    if world.hit(r, 0.0, INFINITY, &mut rec) {
-        return 0.5 * (rec.normal + Vec3::init(1.0, 1.0, 1.0));
-    };
+    if world.hit(r, 0.001, INFINITY, &mut rec) {
+        let target = rec.p + rec.normal + random_in_unit_sphere();
+        return 0.5 * ray_color(
+            Ray::init(rec.p, target - rec.p),
+            world,
+            depth + 1);
+    }
 
     let unit_direction = r.direction.unit_vector();
     let t = 0.5 * (unit_direction.y() + 1.0);
@@ -33,6 +45,7 @@ fn main() {
     // Image
     let image_width = 400;
     let image_height = (image_width as f64 / ASPECT_RATIO) as i32;
+    let samples_per_pixel = 1;
     
     // World
     let sphere1 = Sphere {
@@ -56,17 +69,16 @@ fn main() {
     let mut buffer = String::new();
     buffer.push_str(&format!("P3\n{} {}\n255\n", image_width, image_height));
 
-    let mut rng = thread_rng();
-
     for j in (0..image_height).rev() {
         eprintln!("\rScanlines remaining: {}", j);
         for i in 0..image_width {
-            let u = ((i as f64) + rng.gen_range(0.0..1.0)) / (image_width - 1) as f64;
-            let v = ((j as f64) + rng.gen_range(0.0..1.0)) / (image_height - 1) as f64;
+            let u = ((i as f64) + core::random()) / (image_width - 1) as f64;
+            let v = ((j as f64) + core::random()) / (image_height - 1) as f64;
 
             let r = camera.get_ray(u, v);
 
-            let pixel_color = ray_color(r, &world);
+            let mut pixel_color = ray_color(r, &world, 0) / samples_per_pixel as f64;
+            pixel_color.sqrt();
 
             buffer.push_str(&pixel_color.print());
         }

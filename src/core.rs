@@ -17,7 +17,7 @@ fn degrees_to_radians(degrees: f64) -> f64 {
     degrees * PI / 180.0
 }
 
-fn random() -> f64 {
+pub fn random() -> f64 {
     // Returns a random real in [0,1)
     let mut rng = thread_rng();
     rng.gen_range(0.0..1.0)
