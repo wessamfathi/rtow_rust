@@ -12,7 +12,7 @@ use rtow_rust::shapes;
 use shapes::sphere::Sphere;
 use shapes::hittable_list::HittableList;
 
-const FILE_PATH: &str = "./output/image.ppm";
+const FILE_PATH: &str = "./output/07.ppm";
 
 fn ray_color(r: Ray, world: &HittableList) -> Vec3 {
     let mut rec = HitRecord::new();
