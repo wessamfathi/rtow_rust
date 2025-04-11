@@ -10,7 +10,7 @@ impl Ray {
         self.origin + t * self.direction
     }
 
-    pub fn init(origin: Vec3, direction: Vec3) -> Ray {
+    pub fn new(origin: Vec3, direction: Vec3) -> Ray {
         Ray { 
             origin,
             direction,

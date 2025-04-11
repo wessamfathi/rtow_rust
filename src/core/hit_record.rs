@@ -1,6 +1,7 @@
 use crate::core::dot;
 use crate::core::ray::Ray;
 use crate::core::vec3::Vec3;
+use crate::materials::Material;
 
 #[derive(Copy, Clone)]
 pub struct HitRecord {
@@ -8,15 +9,17 @@ pub struct HitRecord {
     pub normal: Vec3,
     pub t: f64,
     pub front_face: bool,
+    pub material: Option<Material>,
 }
 
 impl HitRecord {
     pub fn new() -> HitRecord {
         HitRecord {
-            p: Vec3::init(0.0, 0.0, 0.0),
-            normal: Vec3::init(0.0, 0.0, 0.0),
+            p: Vec3::new(0.0, 0.0, 0.0),
+            normal: Vec3::new(0.0, 0.0, 0.0),
             t: 0.0,
             front_face: false,
+            material: None,
         }
     }
 

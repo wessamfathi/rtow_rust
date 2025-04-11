@@ -2,10 +2,12 @@ use crate::core::dot;
 use crate::core::hit_record::HitRecord;
 use crate::core::ray::Ray;
 use crate::core::vec3::Vec3;
+use crate::materials::Material;
 
 pub struct Sphere {
     pub center: Vec3,
     pub radius: f64,
+	pub material: Material,
 }
 
 impl Sphere {
@@ -22,6 +24,7 @@ impl Sphere {
 				rec.t = temp;
 				rec.p = r.at(rec.t);
 				rec.normal = (rec.p - self.center) / self.radius;
+				rec.material = Some(self.material);
 				return true;
 			}
 			
@@ -30,6 +33,7 @@ impl Sphere {
 				rec.t = temp;
 				rec.p = r.at(rec.t);
 				rec.normal = (rec.p - self.center) / self.radius;
+				rec.material = Some(self.material);
 				return true;
 			}
 		}

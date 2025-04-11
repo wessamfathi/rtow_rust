@@ -7,22 +7,22 @@ pub struct Vec3 {
     pub e: [f64; 3],
 }
 
-overload!(- (u: ?Vec3) -> Vec3 { Vec3::init(-u.e[0], -u.e[1], -u.e[2]) } );
+overload!(- (u: ?Vec3) -> Vec3 { Vec3::new(-u.e[0], -u.e[1], -u.e[2]) } );
 
 overload!((u: ?Vec3) + (v: ?Vec3) -> Vec3 {
-	Vec3::init(u.e[0] + v.e[0], u.e[1] + v.e[1], u.e[2] + v.e[2])
+	Vec3::new(u.e[0] + v.e[0], u.e[1] + v.e[1], u.e[2] + v.e[2])
 } );
 
 overload!((u: ?Vec3) - (v: ?Vec3) -> Vec3 {
-	Vec3::init(u.e[0] - v.e[0], u.e[1] - v.e[1], u.e[2] - v.e[2])
+	Vec3::new(u.e[0] - v.e[0], u.e[1] - v.e[1], u.e[2] - v.e[2])
 } );
 
 overload!((u: ?Vec3) * (v: ?Vec3) -> Vec3 {
-	Vec3::init(u.e[0] * v.e[0], u.e[1] * v.e[1], u.e[2] * v.e[2])
+	Vec3::new(u.e[0] * v.e[0], u.e[1] * v.e[1], u.e[2] * v.e[2])
 } );
 
 overload!((v: ?Vec3) * (t: f64) -> Vec3 {
-	Vec3::init(v.e[0] * t, v.e[1] * t, v.e[2] * t)
+	Vec3::new(v.e[0] * t, v.e[1] * t, v.e[2] * t)
 } );
 
 overload!((t: f64) * (v: ?Vec3) -> Vec3 {
@@ -62,7 +62,7 @@ impl Vec3 {
         Vec3 { e: [0.0, 0.0, 0.0] }
     }
 
-    pub fn init(e0: f64, e1: f64, e2: f64) -> Vec3 {
+    pub fn new(e0: f64, e1: f64, e2: f64) -> Vec3 {
         Vec3 { e: [e0, e1, e2] }
     }
 
