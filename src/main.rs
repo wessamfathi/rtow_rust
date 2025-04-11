@@ -16,7 +16,7 @@ use rtow_rust::shapes;
 use shapes::hittable_list::HittableList;
 use shapes::sphere::Sphere;
 
-const FILE_PATH: &str = "./output/08.ppm";
+const FILE_PATH: &str = "./output/09.ppm";
 
 fn ray_color(r: Ray, world: &HittableList, depth: i32) -> Vec3 {
     let mut rec = HitRecord::new();
@@ -61,13 +61,13 @@ fn main() {
     let sphere3 = Sphere {
         center: Vec3::new(1.0, 0.0, -1.0),
         radius: 0.5,
-        material: Material::Metal(Metal::new(Vec3::new(0.8, 0.6, 0.2))),
+        material: Material::Metal(Metal::new(Vec3::new(0.8, 0.6, 0.2), 1.0)),
     };
 
     let sphere4 = Sphere {
         center: Vec3::new(-1.0, 0.0, -1.0),
         radius: 0.5,
-        material: Material::Metal(Metal::new(Vec3::new(0.8, 0.8, 0.8))),
+        material: Material::Metal(Metal::new(Vec3::new(0.8, 0.8, 0.8), 0.3)),
     };
 
     let mut world = HittableList::new();
