@@ -2,6 +2,7 @@
 
 use std::fs;
 use rtow_rust::core;
+use rtow_rust::materials::dielectric::Dielectric;
 
 use core::INFINITY;
 use core::hit_record::HitRecord;
@@ -16,7 +17,7 @@ use rtow_rust::shapes;
 use shapes::hittable_list::HittableList;
 use shapes::sphere::Sphere;
 
-const FILE_PATH: &str = "./output/09.ppm";
+const FILE_PATH: &str = "./output/10.ppm";
 
 fn ray_color(r: Ray, world: &HittableList, depth: i32) -> Vec3 {
     let mut rec = HitRecord::new();
@@ -49,7 +50,7 @@ fn main() {
     let sphere1 = Sphere {
         center: Vec3::new(0.0, 0.0, -1.0),
         radius: 0.5,
-        material: Material::Lambertian(Lambertian::new(Vec3::new(0.8, 0.3, 0.3))),
+        material: Material::Lambertian(Lambertian::new(Vec3::new(0.1, 0.2, 0.5))),
     };
 
     let sphere2 = Sphere {
@@ -67,7 +68,7 @@ fn main() {
     let sphere4 = Sphere {
         center: Vec3::new(-1.0, 0.0, -1.0),
         radius: 0.5,
-        material: Material::Metal(Metal::new(Vec3::new(0.8, 0.8, 0.8), 0.3)),
+        material: Material::Dielectric(Dielectric::new(1.5)),
     };
 
     let mut world = HittableList::new();
