@@ -82,7 +82,7 @@ impl Vec3 {
         self.e[2]
     }
 
-    fn length(&self) -> f64 {
+    pub fn length(&self) -> f64 {
         self.length_squared().sqrt()
     }
 

@@ -13,11 +13,11 @@ use core::camera::*;
 use rtow_rust::materials::{self, Material};
 use materials::lambertian::Lambertian;
 use materials::metal::Metal;
-use rtow_rust::shapes;
+use rtow_rust::shapes::{self, sphere};
 use shapes::hittable_list::HittableList;
 use shapes::sphere::Sphere;
 
-const FILE_PATH: &str = "./output/10.ppm";
+const FILE_PATH: &str = "./output/11.ppm";
 
 fn ray_color(r: Ray, world: &HittableList, depth: i32) -> Vec3 {
     let mut rec = HitRecord::new();
@@ -71,11 +71,18 @@ fn main() {
         material: Material::Dielectric(Dielectric::new(1.5)),
     };
 
+    let sphere5 = Sphere {
+        center: Vec3::new(-1.0, 0.0, -1.0),
+        radius: -0.45,
+        material: Material::Dielectric(Dielectric::new(1.5)),
+    };
+
     let mut world = HittableList::new();
     world.add(&sphere1);
     world.add(&sphere2);
     world.add(&sphere3);
     world.add(&sphere4);
+    world.add(&sphere5);
 
     // Camera
     let camera = Camera::new();
