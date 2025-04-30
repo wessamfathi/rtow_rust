@@ -13,7 +13,7 @@ use core::camera::*;
 use rtow_rust::materials::{self, Material};
 use materials::lambertian::Lambertian;
 use materials::metal::Metal;
-use rtow_rust::shapes::{self, sphere};
+use rtow_rust::shapes;
 use shapes::hittable_list::HittableList;
 use shapes::sphere::Sphere;
 
