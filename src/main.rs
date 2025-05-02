@@ -13,7 +13,7 @@ use rtow_rust::shapes;
 use shapes::hittable_list::HittableList;
 use shapes::sphere::Sphere;
 
-const FILE_PATH: &str = "./output/12.ppm";
+const FILE_PATH: &str = "./output/13.ppm";
 
 fn ray_color(r: Ray, world: &HittableList, depth: i32) -> Vec3 {
     let mut rec = HitRecord::new();
@@ -62,7 +62,13 @@ fn main() {
     world.add(&sphere2);
 
     // Camera
-    let camera = Camera::new(90.0, (image_width / image_height) as f64);
+    let camera = Camera::new(
+        Vec3::new(-2.0, 2.0, 1.0),
+        Vec3::new(0.0, 0.0, -1.0),
+        Vec3::new(0.0, 1.0, 0.0),
+        90.0,
+        (image_width / image_height) as f64
+    );
 
     // Render
     let mut buffer = String::new();

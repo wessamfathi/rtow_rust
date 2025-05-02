@@ -1,6 +1,8 @@
 use crate::core::ray::Ray;
 use crate::core::vec3::Vec3;
 
+use super::PI;
+
 pub const ASPECT_RATIO: f64 = 16.0 / 9.0;
 
 pub struct Camera {
@@ -11,15 +13,17 @@ pub struct Camera {
 }
 
 impl Camera {
-    pub fn new(v_fov: f64, aspect: f64) -> Camera {
-        let theta = v_fov * std::f64::consts::PI / 180.0;
+    pub fn new(look_from: Vec3, look_at: Vec3, v_up: Vec3, v_fov: f64, aspect: f64) -> Camera {
+        let theta = v_fov * PI / 180.0;
         let half_height = (theta / 2.0).tan();
         let half_width = aspect * half_height;
-
-        let origin = Vec3::new(0.0, 0.0, 0.0);
-        let horizontal = Vec3::new(2.0 * half_width, 0.0, 0.0);
-        let vertical = Vec3::new(0.0, 2.0 * half_height, 0.0);
-        let lower_left_corner = Vec3::new(-half_width, -half_height, -1.0);
+        let origin = look_from;
+        let w = (look_from - look_at).unit_vector();
+        let u = v_up.cross(w).unit_vector();
+        let v = w.cross(u);
+        let lower_left_corner = origin - half_width * u - half_height * v - w;
+        let horizontal = 2.0 * half_width * u;
+        let vertical = 2.0 * half_height * v;
 
         Camera {
             origin,
