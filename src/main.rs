@@ -1,5 +1,3 @@
-#![allow(dead_code)]
-
 use std::fs;
 use rtow_rust::core::{self, PI};
 
