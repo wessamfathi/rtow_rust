@@ -1,7 +1,7 @@
 #![allow(dead_code)]
 
 use std::fs;
-use rtow_rust::core;
+use rtow_rust::core::{self, PI};
 use rtow_rust::materials::dielectric::Dielectric;
 
 use core::INFINITY;
@@ -12,12 +12,11 @@ use core::camera::*;
 
 use rtow_rust::materials::{self, Material};
 use materials::lambertian::Lambertian;
-use materials::metal::Metal;
 use rtow_rust::shapes;
 use shapes::hittable_list::HittableList;
 use shapes::sphere::Sphere;
 
-const FILE_PATH: &str = "./output/11.ppm";
+const FILE_PATH: &str = "./output/12.ppm";
 
 fn ray_color(r: Ray, world: &HittableList, depth: i32) -> Vec3 {
     let mut rec = HitRecord::new();
@@ -45,47 +44,28 @@ fn main() {
     let image_width = 400;
     let image_height = (image_width as f64 / ASPECT_RATIO) as i32;
     let samples_per_pixel = 1;
+
+    let r = (PI / 4.0).cos();
     
     // World
     let sphere1 = Sphere {
-        center: Vec3::new(0.0, 0.0, -1.0),
-        radius: 0.5,
-        material: Material::Lambertian(Lambertian::new(Vec3::new(0.1, 0.2, 0.5))),
+        center: Vec3::new(-r, 0.0, -1.0),
+        radius: r,
+        material: Material::Lambertian(Lambertian::new(Vec3::new(0.0, 0.0, 1.0))),
     };
 
     let sphere2 = Sphere {
-        center: Vec3::new(0.0, -100.5, -1.0),
-        radius: 100.0,
-        material: Material::Lambertian(Lambertian::new(Vec3::new(0.8, 0.8, 0.0))),
-    };
-
-    let sphere3 = Sphere {
-        center: Vec3::new(1.0, 0.0, -1.0),
-        radius: 0.5,
-        material: Material::Metal(Metal::new(Vec3::new(0.8, 0.6, 0.2), 1.0)),
-    };
-
-    let sphere4 = Sphere {
-        center: Vec3::new(-1.0, 0.0, -1.0),
-        radius: 0.5,
-        material: Material::Dielectric(Dielectric::new(1.5)),
-    };
-
-    let sphere5 = Sphere {
-        center: Vec3::new(-1.0, 0.0, -1.0),
-        radius: -0.45,
-        material: Material::Dielectric(Dielectric::new(1.5)),
+        center: Vec3::new(r, 0.0, -1.0),
+        radius: r,
+        material: Material::Lambertian(Lambertian::new(Vec3::new(1.0, 0.0, 0.0))),
     };
 
     let mut world = HittableList::new();
     world.add(&sphere1);
     world.add(&sphere2);
-    world.add(&sphere3);
-    world.add(&sphere4);
-    world.add(&sphere5);
 
     // Camera
-    let camera = Camera::new();
+    let camera = Camera::new(90.0, (image_width / image_height) as f64);
 
     // Render
     let mut buffer = String::new();
