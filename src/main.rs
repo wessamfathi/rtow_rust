@@ -1,5 +1,6 @@
 use std::fs;
 use rtow_rust::core::{self, PI};
+use rtow_rust::materials::dielectric::Dielectric;
 
 use core::INFINITY;
 use core::hit_record::HitRecord;
@@ -9,6 +10,7 @@ use core::camera::*;
 
 use rtow_rust::materials::{self, Material};
 use materials::lambertian::Lambertian;
+use materials::metal::Metal;
 use rtow_rust::shapes;
 use shapes::hittable_list::HittableList;
 use shapes::sphere::Sphere;
@@ -57,9 +59,30 @@ fn main() {
         material: Material::Lambertian(Lambertian::new(Vec3::new(1.0, 0.0, 0.0))),
     };
 
+    let sphere3 = Sphere {
+        center: Vec3::new(r * 2.0, 0.0, -1.0),
+        radius: r,
+        material: Material::Metal(Metal::new(Vec3::new(0.8, 0.6, 0.2), 1.0)),
+    };
+
+    let sphere4 = Sphere {
+        center: Vec3::new(-r * 2.0, 0.0, -1.0),
+        radius: r,
+        material: Material::Dielectric(Dielectric::new(1.5)),
+    };
+
+    let sphere5 = Sphere {
+        center: Vec3::new(-r * 2.0, 0.0, -1.0),
+        radius: -r,
+        material: Material::Dielectric(Dielectric::new(1.5)),
+    };
+
     let mut world = HittableList::new();
     world.add(&sphere1);
     world.add(&sphere2);
+    world.add(&sphere3);
+    world.add(&sphere4);
+    world.add(&sphere5);
 
     // Camera
     let camera = Camera::new(
