@@ -15,7 +15,7 @@ use rtow_rust::shapes;
 use shapes::hittable_list::HittableList;
 use shapes::sphere::Sphere;
 
-const FILE_PATH: &str = "./output/13.ppm";
+const FILE_PATH: &str = "./output/14.ppm";
 
 fn ray_color(r: Ray, world: &HittableList, depth: i32) -> Vec3 {
     let mut rec = HitRecord::new();
@@ -85,12 +85,17 @@ fn main() {
     world.add(&sphere5);
 
     // Camera
+    let look_from = Vec3::new(-3.0, 3.0, 2.0);
+    let look_at = Vec3::new(0.0, 1.0, 0.0);
+    let dist_to_focus = (look_from - look_at).length();
     let camera = Camera::new(
-        Vec3::new(-2.0, 2.0, 1.0),
-        Vec3::new(0.0, 0.0, -1.0),
+        look_from,
+        look_at,
         Vec3::new(0.0, 1.0, 0.0),
-        90.0,
-        (image_width / image_height) as f64
+        50.0,
+        (image_width / image_height) as f64,
+        2.0,
+        dist_to_focus,
     );
 
     // Render
