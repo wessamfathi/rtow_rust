@@ -93,7 +93,7 @@ fn main() {
         look_at,
         Vec3::new(0.0, 1.0, 0.0),
         50.0,
-        (image_width / image_height) as f64,
+        image_width as f64 / image_height as f64,
         2.0,
         dist_to_focus,
     );
