@@ -42,7 +42,7 @@ fn main() {
     // Image
     let image_width = 400;
     let image_height = (image_width as f64 / ASPECT_RATIO) as i32;
-    let samples_per_pixel = 1;
+    let samples_per_pixel = 100;
 
     let r = (PI / 4.0).cos();
     
@@ -105,12 +105,17 @@ fn main() {
     for j in (0..image_height).rev() {
         eprintln!("\rScanlines remaining: {}", j);
         for i in 0..image_width {
-            let u = ((i as f64) + core::random()) / (image_width - 1) as f64;
-            let v = ((j as f64) + core::random()) / (image_height - 1) as f64;
+            let mut pixel_color = Vec3::new(0.0, 0.0, 0.0);
 
-            let r = camera.get_ray(u, v);
+            for _ in 0..samples_per_pixel {
+                let u = ((i as f64) + core::random()) / (image_width - 1) as f64;
+                let v = ((j as f64) + core::random()) / (image_height - 1) as f64;
 
-            let mut pixel_color = ray_color(r, &world, 0) / samples_per_pixel as f64;
+                let r = camera.get_ray(u, v);
+                pixel_color += ray_color(r, &world, 0);
+            }
+
+            pixel_color /= samples_per_pixel as f64;
             pixel_color.sqrt();
 
             buffer.push_str(&pixel_color.print());
