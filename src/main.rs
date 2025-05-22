@@ -16,16 +16,20 @@ use shapes::hittable_list::HittableList;
 use shapes::sphere::Sphere;
 
 const FILE_PATH: &str = "./output/14.ppm";
+const MAX_DEPTH: i32 = 50;
 
 fn ray_color(r: Ray, world: &HittableList, depth: i32) -> Vec3 {
+    // If we've exceeded the ray bounce limit, no more light is gathered.
+    if depth <= 0 {
+        return Vec3::new(0.0, 0.0, 0.0);
+    }
+
     let mut rec = HitRecord::new();
 
     if world.hit(r, 0.001, INFINITY, &mut rec) {
         if let Some(mat) = rec.material {
             if let Some((attenuation, scattered)) = mat.scatter(&r, &rec) {
-                if depth < 50 {
-                    return attenuation * ray_color(scattered, world, depth + 1);
-                }
+                return attenuation * ray_color(scattered, world, depth - 1);
             }
         }
 
@@ -110,7 +114,7 @@ fn main() {
 
             let r = camera.get_ray(u, v);
 
-            let mut pixel_color = ray_color(r, &world, 0) / samples_per_pixel as f64;
+            let mut pixel_color = ray_color(r, &world, MAX_DEPTH) / samples_per_pixel as f64;
             pixel_color.sqrt();
 
             buffer.push_str(&pixel_color.print());
