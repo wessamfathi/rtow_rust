@@ -16,16 +16,19 @@ use shapes::hittable_list::HittableList;
 use shapes::sphere::Sphere;
 
 const FILE_PATH: &str = "./output/14.ppm";
+const MAX_DEPTH: i32 = 50;
 
 fn ray_color(r: Ray, world: &HittableList, depth: i32) -> Vec3 {
+    if depth <= 0 {
+        return Vec3::new(0.0, 0.0, 0.0);
+    }
+
     let mut rec = HitRecord::new();
 
     if world.hit(r, 0.001, INFINITY, &mut rec) {
         if let Some(mat) = rec.material {
             if let Some((attenuation, scattered)) = mat.scatter(&r, &rec) {
-                if depth < 50 {
-                    return attenuation * ray_color(scattered, world, depth + 1);
-                }
+                return attenuation * ray_color(scattered, world, depth - 1);
             }
         }
 
@@ -110,9 +113,8 @@ fn main() {
             for _ in 0..samples_per_pixel {
                 let u = ((i as f64) + core::random()) / (image_width - 1) as f64;
                 let v = ((j as f64) + core::random()) / (image_height - 1) as f64;
-
                 let r = camera.get_ray(u, v);
-                pixel_color += ray_color(r, &world, 0);
+                pixel_color += ray_color(r, &world, MAX_DEPTH);
             }
 
             pixel_color /= samples_per_pixel as f64;
