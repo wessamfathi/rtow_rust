@@ -117,7 +117,7 @@ fn main() {
                 pixel_color += ray_color(r, &world, MAX_DEPTH);
             }
 
-            pixel_color /= samples_per_pixel as f64;
+            pixel_color = pixel_color / (samples_per_pixel as f64);
             pixel_color.sqrt();
 
             buffer.push_str(&pixel_color.print());
