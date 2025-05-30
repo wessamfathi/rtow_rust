@@ -2,14 +2,20 @@ use super::sphere::Sphere;
 use crate::core::hit_record::HitRecord;
 use crate::core::ray::Ray;
 
-pub struct HittableList<'a> {
-    hittables: Vec<&'a Sphere>,
+pub struct HittableList {
+    hittables: Vec<Sphere>,
 }
 
-impl<'a> HittableList<'a> {
-    pub fn new() -> HittableList<'a> {
+impl<'a> HittableList {
+    pub fn new() -> HittableList {
         HittableList {
             hittables: Vec::new(),
+        }
+    }
+
+    pub fn allocate(capacity: usize) -> HittableList {
+        HittableList {
+            hittables: Vec::with_capacity(capacity),
         }
     }
 
@@ -17,7 +23,7 @@ impl<'a> HittableList<'a> {
         self.hittables.clear();
     }
 
-    pub fn add(&mut self, object: &'a Sphere) {
+    pub fn add(&mut self, object: Sphere) {
         self.hittables.push(object);
     }
 
