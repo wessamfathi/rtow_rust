@@ -58,7 +58,7 @@ overload!((u: &mut Vec3) /= (v: Vec3) {
 });
 
 impl Vec3 {
-    fn vec3() -> Vec3 {
+    pub fn vec3() -> Vec3 {
         Vec3 { e: [0.0, 0.0, 0.0] }
     }
 
