@@ -15,7 +15,7 @@ impl Lambertian {
 
     pub fn scatter(&self, ray_in: &Ray, hit_record: &HitRecord) -> Option<(Vec3, Ray)> {
         let target = hit_record.p + hit_record.normal + random_in_unit_sphere();
-        let scattered = Ray::new(hit_record.p, target - hit_record.p);
+        let scattered = Ray::new(hit_record.p, target - hit_record.p, ray_in.time);
         Some((self.albedo, scattered))
     }
 }

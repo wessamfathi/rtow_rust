@@ -48,9 +48,9 @@ impl Dielectric {
         }
 
         if core::random() < reflect_prob {
-            scattered = Ray::new(hit_record.p, reflected);
+            scattered = Ray::new(hit_record.p, reflected, ray_in.time);
         } else {
-            scattered = Ray::new(hit_record.p, refracted);
+            scattered = Ray::new(hit_record.p, refracted, ray_in.time);
         }
 
         Some((attenuation, scattered))
