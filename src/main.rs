@@ -1,5 +1,5 @@
 use std::fs;
-use rtow_rust::core::{self, PI};
+use rtow_rust::core;
 use rtow_rust::materials::dielectric::Dielectric;
 
 use core::INFINITY;
