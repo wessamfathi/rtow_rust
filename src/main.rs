@@ -1,6 +1,7 @@
 use std::fs;
 use rtow_rust::core;
 use rtow_rust::materials::dielectric::Dielectric;
+use rayon::prelude::*;
 
 use core::INFINITY;
 use core::hit_record::HitRecord;
@@ -69,27 +70,36 @@ fn main() {
     let mut buffer = String::new();
     buffer.push_str(&format!("P3\n{} {}\n255\n", image_width, image_height));
 
-    for j in (0..image_height).rev() {
-        eprintln!("\rScanlines remaining: {}", j);
-        for i in 0..image_width {
-            let mut pixel_color = Vec3::new(0.0, 0.0, 0.0);
-
-            for _ in 0..samples_per_pixel {
-                let u = ((i as f64) + core::random()) / (image_width - 1) as f64;
-                let v = ((j as f64) + core::random()) / (image_height - 1) as f64;
-                let r = camera.get_ray(u, v);
-                pixel_color += ray_color(r, &world, MAX_DEPTH);
-            }
-
-            pixel_color = pixel_color / (samples_per_pixel as f64);
-            pixel_color.sqrt();
-
-            buffer.push_str(&pixel_color.print());
+    // Collect (j, row) pairs in parallel, then sort and write in correct order
+    let mut rows: Vec<(i32, Vec<String>)> = (0..image_height)
+        .into_par_iter()
+        .map(|j| {
+            let row: Vec<String> = (0..image_width)
+                .map(|i| {
+                    let mut pixel_color = Vec3::new(0.0, 0.0, 0.0);
+                    for _ in 0..samples_per_pixel {
+                        let u = ((i as f64) + core::random()) / (image_width - 1) as f64;
+                        let v = ((j as f64) + core::random()) / (image_height - 1) as f64;
+                        let r = camera.get_ray(u, v);
+                        pixel_color += ray_color(r, &world, MAX_DEPTH);
+                    }
+                    pixel_color = pixel_color / (samples_per_pixel as f64);
+                    pixel_color.sqrt();
+                    pixel_color.print()
+                })
+                .collect();
+            eprintln!("\rScanlines remaining: {}", image_height - 1 - j);
+            (j, row)
+        })
+        .collect();
+    // Sort rows by j descending (top to bottom)
+    rows.sort_by_key(|(j, _)| -j);
+    for (_, row) in rows {
+        for color in row {
+            buffer.push_str(&color);
         }
     }
-
     let _ = fs::write(FILE_PATH, buffer);
-
     eprintln!("\nDone.");
 }
 
