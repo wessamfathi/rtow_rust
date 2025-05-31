@@ -2,13 +2,15 @@
 
 ## Overview
 
-A Rust implementation of Ray Tracing in One Weekend, focusing on real-time rendering concepts with Rust’s safety and performance benefits.
+A Rust implementation of Ray Tracing in One Weekend / Ray Tracing The Next Week, focusing on real-time rendering concepts with Rust’s safety and performance benefits.
 
 ## Features
 
-- Implements ray-sphere intersections and shading techniques
+- Ray-sphere intersections and shading techniques
 - Supports diffuse, reflective, and refractive materials
 - Outputs rendered images in PPM format
+- Multithreaded ray tracing
+- Motion blur
 
 ## Prerequisites
 
