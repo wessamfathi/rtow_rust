@@ -19,7 +19,7 @@ pub struct Camera {
 
 impl Camera {
     pub fn new(look_from: Vec3, look_at: Vec3, v_up: Vec3, v_fov: f64, aspect: f64, aperture: f64, focus_dist: f64) -> Camera {
-        let lens_radius = aperture / 2.0;
+        let lens_radius = aperture / 22.0;
         let theta = v_fov * PI / 180.0;
         let half_height = (theta / 2.0).tan();
         let half_width = aspect * half_height;
