@@ -1,4 +1,4 @@
-# rtow_rust
+# raytracing_rust
 
 ## Overview
 
