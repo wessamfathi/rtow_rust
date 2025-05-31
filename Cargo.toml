@@ -10,3 +10,6 @@ edition = "2024"
 overload = "0.1.1"
 rand = "0.8"
 rayon = "1.10.0"
+
+[profile.release]
+debug = true
