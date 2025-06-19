@@ -16,3 +16,6 @@ Cargo.lock
 # OS X files
 *.DS_STORE
 .DS_STORE
+
+# Performance profiles
+perf/
